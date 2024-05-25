@@ -1,0 +1,15 @@
+minimum_severity: MEDIUM
+exclude:
+  - aws-s3-enable-versioning
+  - aws-rds-enable-iam-auth
+  - aws-s3-encryption-customer-key
+severity_overrides:
+  aws-s3-enable-bucket-logging: LOW
+  aws-s3-no-public-buckets: LOW
+  aws-s3-ignore-public-acls: LOW
+  aws-s3-bucket-encryption: LOW
+  aws-s3-ignore-public-policy: LOW
+  aws-rds-encrypt-instance-storage-data: LOW
+  aws-rds-specify-backup-retention: LOW
+  aws-ec2-enable-launch-config-at-rest-encryption: LOW
+  aws-ec2-enforce-launch-config-http-token-imds: LOW
