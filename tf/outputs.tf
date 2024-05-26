@@ -1,5 +1,5 @@
 output "s3_bucket_arn" {
-  value       = aws_s3_bucket.website_bucket
+  value       = aws_s3_bucket.website_bucket.arn
   description = "origin s3 bucket object"
 }
 
