@@ -28,4 +28,3 @@ repos:
           args:
              - --args=--config=__GIT_WORKING_DIR__tf/.tflint.hcl
         - id: terraform_trivy
-          
