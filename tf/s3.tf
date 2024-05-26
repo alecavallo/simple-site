@@ -1,5 +1,5 @@
 #S3 encryption is not required due the data on this bucket is publicly accessible
-#tfsec:ignore:aws-s3-enable-bucket-logging tfsec:ignore:aws-s3-enable-bucket-encryption tsec:ignore:aws-s3-encryption-customer-key tfsec:ignore:aws-s3-enable-versioning tfsec:ignore:aws-s3-encryption-customer-key
+# tfsec:ignore:avd-aws-0088 tfsec:ignore:avd-aws-0089 tfsec:ignore:avd-aws-0090 tfsec:ignore:avd-aws-0132 tfsec:ignore:avd-aws-0320
 resource "aws_s3_bucket" "website_bucket" {
   bucket = "stoneitcloud.com"
 }
@@ -97,6 +97,7 @@ resource "aws_s3_bucket_policy" "website_bucket_policy" {
 
 
 /*UPLOADING EXAMPLE WEBSITE*/
+# this is not the ideal way to deploy code into S3. This was created to show how the static site will work
 resource "aws_s3_object" "dist" {
   for_each = fileset("./example-website-code", "*")
   bucket   = aws_s3_bucket.website_bucket.id

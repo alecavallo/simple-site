@@ -1,6 +1,9 @@
 resource "aws_cloudfront_origin_access_identity" "origin_access_identity" {
   comment = "OAI for stoneitcloud.com bucket"
 }
+
+# cloudwatch logging and WAF are not required for this example
+# tfsec:ignore:avd-aws-0010 tfsec:ignore:avd-aws-0011
 resource "aws_cloudfront_distribution" "this" {
   origin {
     # domain_name = aws_s3_bucket_website_configuration.website_bucket_website_configuration.website_endpoint
