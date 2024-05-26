@@ -20,7 +20,7 @@ The infrastructure deployment is automatized using Terraform with basic security
 
 ## Cost caluclations
 
-The monthly infrastructure costs were calculated having the followind data as example:
+The monthly infrastructure costs were calculated having the following data as example:
 
 - Bucket size:  ~1343Mb
 - Average page size: 1376.2Kb
@@ -32,6 +32,7 @@ The monthly infrastructure costs were calculated having the followind data as ex
 With the data provided above we can obtain an estimation similar to this one: <https://calculator.aws/#/estimate?id=9ad857c6ac63f748272895c709213116905fd5a3>
 
 An aproximate cost of $2.88 per year!!
+
 This does not includes the services:
 
 - Web Application Firewall (WAF): as it's an static site, the application does not requires any protection because the content is static. Eventually it could be enabled to mitigate DDoS attacks.
