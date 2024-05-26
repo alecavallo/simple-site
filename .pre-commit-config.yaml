@@ -26,5 +26,5 @@ repos:
         - id: terraform_fmt
         - id: terraform_tflint
           args:
-             - --args=--config=__GIT_WORKING_DIR__tf/.tflint.hcl
+             - --args=--config=__GIT_WORKING_DIR__/.tflint.hcl
         - id: terraform_trivy
