@@ -1,7 +1,7 @@
 #S3 encryption is not required due the data on this bucket is publicly accessible
 # tfsec:ignore:avd-aws-0088 tfsec:ignore:avd-aws-0089 tfsec:ignore:avd-aws-0090 tfsec:ignore:avd-aws-0132 tfsec:ignore:avd-aws-0320
 resource "aws_s3_bucket" "website_bucket" {
-  bucket = "stoneitcloud.com"
+  bucket = local.bucket_name
 }
 resource "aws_s3_bucket_public_access_block" "website_bucket_acl" {
   bucket                  = aws_s3_bucket.website_bucket.id
@@ -9,46 +9,6 @@ resource "aws_s3_bucket_public_access_block" "website_bucket_acl" {
   block_public_policy     = true
   ignore_public_acls      = true
   restrict_public_buckets = true
-}
-
-resource "aws_kms_key" "stoneit_key" {
-  description             = "This key is used to encrypt bucket objects for corporate site"
-  deletion_window_in_days = 10
-  enable_key_rotation     = true
-}
-data "aws_caller_identity" "current" {}
-data "aws_iam_policy_document" "kms_key_policy_document" {
-  statement {
-    sid       = "Enable IAM User Permissions"
-    effect    = "Allow"
-    actions   = ["kms:*"]
-    resources = ["*"]
-    principals {
-      type        = "AWS"
-      identifiers = ["arn:aws:iam::${tostring(data.aws_caller_identity.current.account_id)}:root"]
-    }
-  }
-
-  statement {
-    sid    = "Allow CloudWatch Logs to use the key"
-    effect = "Allow"
-    actions = [
-      "kms:Encrypt*",
-      "kms:Decrypt*",
-      "kms:ReEncrypt*",
-      "kms:GenerateDataKey*",
-      "kms:DescribeKey"
-    ]
-    resources = ["*"]
-    principals {
-      type        = "AWS"
-      identifiers = ["arn:aws:iam::${tostring(data.aws_caller_identity.current.account_id)}:root"]
-    }
-  }
-}
-resource "aws_kms_key_policy" "stoneit_key_policy" {
-  key_id = aws_kms_key.stoneit_key.key_id
-  policy = data.aws_iam_policy_document.kms_key_policy_document.json
 }
 
 resource "aws_s3_bucket_website_configuration" "website_bucket_website_configuration" {
@@ -99,10 +59,11 @@ resource "aws_s3_bucket_policy" "website_bucket_policy" {
 /*UPLOADING EXAMPLE WEBSITE*/
 # this is not the ideal way to deploy code into S3. This was created to show how the static site will work
 resource "aws_s3_object" "dist" {
-  for_each = fileset("./example-website-code", "*")
-  bucket   = aws_s3_bucket.website_bucket.id
-  key      = each.value
-  source   = "./example-website-code/${each.value}"
+  for_each     = fileset("./example-website-code", "**")
+  bucket       = aws_s3_bucket.website_bucket.id
+  key          = each.value
+  source       = "./example-website-code/${each.value}"
+  content_type = lookup(local.content_type_map, reverse(split(".", "./example-website-code/${each.value}"))[0], "text/html")
   # update files when they changes
   etag = filemd5("./example-website-code/${each.value}")
 }

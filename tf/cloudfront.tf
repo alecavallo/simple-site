@@ -1,12 +1,11 @@
 resource "aws_cloudfront_origin_access_identity" "origin_access_identity" {
-  comment = "OAI for stoneitcloud.com bucket"
+  comment = "OAI for ${local.bucket_name}"
 }
 
 # cloudwatch logging and WAF are not required for this example
 # tfsec:ignore:avd-aws-0010 tfsec:ignore:avd-aws-0011
 resource "aws_cloudfront_distribution" "this" {
   origin {
-    # domain_name = aws_s3_bucket_website_configuration.website_bucket_website_configuration.website_endpoint
     domain_name = aws_s3_bucket.website_bucket.bucket_regional_domain_name
     origin_id   = aws_s3_bucket.website_bucket.arn
 
@@ -18,9 +17,8 @@ resource "aws_cloudfront_distribution" "this" {
 
   enabled             = true
   is_ipv6_enabled     = true
-  comment             = "Cloudfront distribution for stoneitcloud.com"
+  comment             = "Cloudfront distribution for ${local.bucket_name}"
   default_root_object = "index.html"
-  aliases             = ["stoneitcloud.com"]
 
   default_cache_behavior {
     allowed_methods        = ["GET", "HEAD"]
@@ -40,9 +38,9 @@ resource "aws_cloudfront_distribution" "this" {
 
   price_class = "PriceClass_200"
   viewer_certificate {
-    ssl_support_method       = "sni-only"
-    minimum_protocol_version = "TLSv1.2_2021"
+    cloudfront_default_certificate = true
   }
+
 
   restrictions {
     geo_restriction {
